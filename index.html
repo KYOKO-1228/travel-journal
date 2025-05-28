@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Travel Journal</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+    #map {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      margin: auto;
+      border: 2px solid #333;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/BlankMap-World.png/800px-BlankMap-World.png');
+      background-size: cover;
+    }
+
+    .pin {
+      width: 25px;
+      cursor: grab;
+    }
+
+    .dropped-pin {
+      position: absolute;
+      width: 25px;
+      cursor: pointer;
+    }
+
+    .selected {
+      outline: 3px solid blue;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TRAVEL JOURNAL</h1>
+  <p>Hover over a pin to highlight it. Press <strong>Backspace</strong> to delete it.</p>
+
+  <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
+       draggable="true"
+       class="pin"
+       id="pin"
+       alt="Map Pin" />
+
+  <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)"></div>
+
+  <script>
+    const pinImage = document.getElementById("pin");
+    let offsetX = 0;
+    let offsetY = 0;
+    let hoveredPin = null;
+
+    // When drag starts, calculate where inside the pin the user clicked
+    pinImage.addEventListener("dragstart", function (e) {
+      const rect = pinImage.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+    });
+
+    function dropPin(event) {
+      const map = document.getElementById("map");
+      const mapRect = map.getBoundingClientRect();
+
+      const x = event.clientX - mapRect.left - offsetX;
+      const y = event.clientY - mapRect.top - offsetY;
+
+      const newPin = document.createElement("img");
+      newPin.src = pinImage.src;
+      newPin.className = "dropped-pin";
+      newPin.style.left = x + "px";
+      newPin.style.top = y + "px";
+
+      // Hover to select
+      newPin.addEventListener("mouseenter", function () {
+        newPin.classList.add("selected");
+        hoveredPin = newPin;
+      });
+      newPin.addEventListener("mouseleave", function () {
+        newPin.classList.remove("selected");
+        hoveredPin = null;
+      });
+
+      map.appendChild(newPin);
+    }
+
+    // Delete pin on Backspace
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Backspace" && hoveredPin) {
+        hoveredPin.remove();
+        hoveredPin = null;
+      }
+    });
+  </script>
+</body>
+</html>
 
