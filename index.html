@@ -22,7 +22,12 @@
     .pin {
       width: 30px;
       cursor: grab;
-      allign: left; 
+    }
+    .original {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
     }
 
     .dropped-pin {
@@ -42,13 +47,15 @@
   <h1>TRAVEL JOURNAL</h1>
   <p>Hover over a pin to highlight it. Press <strong>Backspace</strong> to delete it.</p>
 
-  <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
-       draggable="true"
-       class="pin"
-       id="pin"
-       alt="Map Pin" />
+ <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)">
+    <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
+         draggable="true"
+         class="pin original"
+         id="pin"
+         alt="Map Pin" />
+  </div>
 
-  <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)"></div>
+ 
 
   <script>
     const pinImage = document.getElementById("pin");
