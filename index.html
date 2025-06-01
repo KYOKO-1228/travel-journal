@@ -7,6 +7,9 @@
     body {
       text-align: center;
       font-family: sans-serif;
+      margin: 0px;
+      border: 0px;
+      background-color: white; 
     }
 
     #map {
@@ -19,6 +22,14 @@
       background-size: cover;
      
     }
+
+    #header{
+      width: 100%;
+      height: 600px; 
+      background-color: #1f2139;
+      text-align: left; 
+    }
+      
 
     .pin {
       width: 30px;
@@ -47,10 +58,9 @@
   </style>
 </head>
 <body>
-
-  <h1>TRAVEL JOURNAL</h1>
-  <p>Hover over a pin to highlight it. Press <strong>Backspace</strong> to delete it.</p>
-
+<div id="header">
+  <h1 style="font-size: 60px; color: white">TRAVEL JOURNAL</h1>
+</div>
  <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)">
     <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
          draggable="true"
