@@ -7,8 +7,8 @@
     body {
       text-align: center;
       font-family: sans-serif;
-      margin: 0px;
-      border: 0px;
+      margin: 0;
+      border: 0;
       background-color: white; 
     }
 
@@ -29,6 +29,14 @@
       background-color: #1f2139;
       text-align: left; 
     }
+
+    .header{
+      font-size: 60px; 
+      color: white; 
+      text-align: center;
+      padding-top: 270px; 
+    }
+      
       
 
     .pin {
@@ -58,8 +66,8 @@
   </style>
 </head>
 <body>
-<div id="header">
-  <h1 style="font-size: 60px; color: white">TRAVEL JOURNAL</h1>
+<div class="header">
+  <h1 id="header">TRAVEL JOURNAL</h1>
 </div>
  <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)">
     <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
