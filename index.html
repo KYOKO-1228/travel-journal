@@ -124,6 +124,54 @@
 </div>
 
   <script>
+    let activePin = null;
+
+function openModal(pin) {
+  activePin = pin;
+  document.getElementById("diaryInput").value = pin.dataset.diary || "";
+  const photos = JSON.parse(pin.dataset.photos || "[]");
+  showPhotoPreview(photos);
+  document.getElementById("diaryModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("diaryModal").style.display = "none";
+  document.getElementById("photoInput").value = "";
+  document.getElementById("photoPreview").innerHTML = "";
+}
+
+function saveDiary() {
+  if (activePin) {
+    activePin.dataset.diary = document.getElementById("diaryInput").value;
+    activePin.dataset.photos = JSON.stringify(currentPhotos);
+    closeModal();
+  }
+}
+
+let currentPhotos = [];
+
+function addPhoto() {
+  const url = document.getElementById("photoInput").value.trim();
+  if (url) {
+    currentPhotos.push(url);
+    showPhotoPreview(currentPhotos);
+    document.getElementById("photoInput").value = "";
+  }
+}
+
+function showPhotoPreview(photos) {
+  currentPhotos = photos;
+  const preview = document.getElementById("photoPreview");
+  preview.innerHTML = "";
+  photos.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.style.width = "80px";
+    img.style.margin = "5px";
+    preview.appendChild(img);
+  });
+}
+
     const pinImage = document.getElementById("pin");
     let offsetX = 0;
     let offsetY = 0;
@@ -158,6 +206,11 @@
         newPin.classList.remove("selected");
         hoveredPin = null;
       });
+      newPin.addEventListener("click", () => openModal(newPin));
+
+    map.appendChild(newPin);
+  }
+
 
       map.appendChild(newPin);
     }
@@ -168,6 +221,7 @@
         hoveredPin.remove();
         hoveredPin = null;
       }
+      
     });
   </script>
 </body>
