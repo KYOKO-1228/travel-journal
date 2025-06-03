@@ -8,59 +8,53 @@
       text-align: center;
       font-family: sans-serif;
       margin: 0;
-      border: 0;
-      
+      background-color: white; 
     }
 
-    #map {
-      position: relative;
-      width: 1200px;
-      height: 660px;
-      margin:0 auto;
-      border: 2px solid #333;
-      background-image: url('worldmap.png');
-      background-size: cover;
-     
-    }
-
-    .header{
+    .header {
       height: 600px; 
       background-color: #1f2139;
     }
 
-    .sub-header{
-      height: 210px; 
-      backgroud-color: white; 
+    .sub-header {
+      height: 220px; 
+      background-color: white; 
       padding: 20px; 
-    }
-    
-    .content{
-      background-color:#1f2139;
-      margin: 0; 
-      padding: 20px; 
-      text-align: center; 
-   
     }
 
-    #header{
+    .content {
+      background-color: #1f2139;
+      padding: 20px; 
+    }
+
+    #header {
       font-size: 80px; 
       color: white; 
       margin: 0;
       padding-left: 60px;
       padding-top: 10px;
       text-align: left;
-      
     }
-    hr{
+
+    hr {
       border: 2px solid black; 
-       
     }
-      
+
+    #map {
+      position: relative;
+      width: 1200px;
+      height: 660px;
+      margin: 0 auto;
+      border: 2px solid #333;
+      background-image: url('worldmap.png');
+      background-size: cover;
+    }
 
     .pin {
       width: 30px;
       cursor: grab;
     }
+
     .original {
       position: absolute;
       top: 40px;
@@ -81,103 +75,71 @@
       outline: 3px solid rgba(253, 89, 0, 0.64);
       border-radius: 25%;
     }
+
+    #diaryModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      background-color: #fff;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+    }
+
+    #diaryModal textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+      font-family: sans-serif;
+      resize: none;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    #photoPreview img {
+      width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 <body>
-<div class="header">
-  <h1 id="header" style="padding-top:320px">ONLINE</h1>
-  <h1 id="header">TRAVEL JOURNAL</h1>
-</div>
+  <div class="header">
+    <h1 id="header" style="padding-top:320px">ONLINE</h1>
+    <h1 id="header">TRAVEL JOURNAL</h1>
+  </div>
   <div class="sub-header">
-   
-    <hr>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <hr>
   </div>
   <div class="content">
- <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)">
-    <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
-         draggable="true"
-         class="pin original"
-         id="pin"
-         alt="Map Pin" />
+    <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)">
+      <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
+           draggable="true"
+           class="pin original"
+           id="pin"
+           alt="Map Pin" />
+    </div>
   </div>
+
+  <div id="diaryModal">
+    <textarea id="diaryText" placeholder="Write your travel story..."></textarea><br>
+    <input type="file" id="photoUpload" accept="image/*"><br><br>
+    <div id="photoPreview"></div>
+    <button onclick="closeModal()">Close</button>
   </div>
- <div id="diaryModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:white; padding:20px; border:2px solid #333; z-index:1000;">
-  <h2>Pin Diary</h2>
-  <textarea id="diaryInput" placeholder="Write your diary..." style="width:100%; height:100px;"></textarea>
-  <br><br>
-  <input id="photoInput" type="text" placeholder="Photo URL" style="width:80%" />
-  <button onclick="addPhoto()">Add Photo</button>
-  <div id="photoPreview" style="margin-top:10px;"></div>
-  <br>
-  <button onclick="saveDiary()">Save</button>
-  <button onclick="closeModal()">Close</button>
-</div>
 
   <script>
-    let activePin = null;
-
-function openModal(pin) {
-  activePin = pin;
-  document.getElementById("diaryInput").value = pin.dataset.diary || "";
-  const photos = JSON.parse(pin.dataset.photos || "[]");
-  showPhotoPreview(photos);
-  document.getElementById("diaryModal").style.display = "block";
-}
-
-function closeModal() {
-  document.getElementById("diaryModal").style.display = "none";
-  document.getElementById("photoInput").value = "";
-  document.getElementById("photoPreview").innerHTML = "";
-}
-
-function saveDiary() {
-  if (activePin) {
-    activePin.dataset.diary = document.getElementById("diaryInput").value;
-    activePin.dataset.photos = JSON.stringify(currentPhotos);
-    closeModal();
-  }
-}
-
-let currentPhotos = [];
-
-function addPhoto() {
-  const url = document.getElementById("photoInput").value.trim();
-  if (url) {
-    currentPhotos.push(url);
-    showPhotoPreview(currentPhotos);
-    document.getElementById("photoInput").value = "";
-  }
-}
-
-function showPhotoPreview(photos) {
-  currentPhotos = photos;
-  const preview = document.getElementById("photoPreview");
-  preview.innerHTML = "";
-  photos.forEach(url => {
-    const img = document.createElement("img");
-    img.src = url;
-    img.style.width = "80px";
-    img.style.margin = "5px";
-    preview.appendChild(img);
-  });
-}
-
     const pinImage = document.getElementById("pin");
     let offsetX = 0;
     let offsetY = 0;
     let hoveredPin = null;
 
-    // When drag starts, calculate where inside the pin the user clicked
     pinImage.addEventListener("dragstart", function (e) {
       const rect = pinImage.getBoundingClientRect();
       offsetX = e.clientX - rect.left;
@@ -187,7 +149,6 @@ function showPhotoPreview(photos) {
     function dropPin(event) {
       const map = document.getElementById("map");
       const mapRect = map.getBoundingClientRect();
-
       const x = event.clientX - mapRect.left - offsetX;
       const y = event.clientY - mapRect.top - offsetY;
 
@@ -197,7 +158,6 @@ function showPhotoPreview(photos) {
       newPin.style.left = x + "px";
       newPin.style.top = y + "px";
 
-      // Hover to select
       newPin.addEventListener("mouseenter", function () {
         newPin.classList.add("selected");
         hoveredPin = newPin;
@@ -206,24 +166,43 @@ function showPhotoPreview(photos) {
         newPin.classList.remove("selected");
         hoveredPin = null;
       });
-      newPin.addEventListener("click", () => openModal(newPin));
-
-    map.appendChild(newPin);
-  }
-
+      newPin.addEventListener("click", function () {
+        openModal();
+      });
 
       map.appendChild(newPin);
     }
 
-    // Delete pin on Backspace
     document.addEventListener("keydown", function (event) {
       if (event.key === "Backspace" && hoveredPin) {
         hoveredPin.remove();
         hoveredPin = null;
       }
-      
+    });
+
+    function openModal() {
+      document.getElementById("diaryModal").style.display = "block";
+      document.getElementById("diaryText").value = "";
+      document.getElementById("photoPreview").innerHTML = "";
+    }
+
+    function closeModal() {
+      document.getElementById("diaryModal").style.display = "none";
+    }
+
+    document.getElementById("photoUpload").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          document.getElementById("photoPreview").innerHTML = "";
+          document.getElementById("photoPreview").appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
     });
   </script>
 </body>
 </html>
-
