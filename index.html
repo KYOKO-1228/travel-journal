@@ -135,74 +135,103 @@
   </div>
 
   <script>
-    const pinImage = document.getElementById("pin");
-    let offsetX = 0;
-    let offsetY = 0;
-    let hoveredPin = null;
+  const pinImage = document.getElementById("pin");
+  let offsetX = 0;
+  let offsetY = 0;
+  let hoveredPin = null;
+  const pinData = new WeakMap(); // store data per pin
 
-    pinImage.addEventListener("dragstart", function (e) {
-      const rect = pinImage.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-    });
+  // Modal Elements
+  const modal = document.getElementById("modal");
+  const diaryInput = document.getElementById("diaryInput");
+  const photoInput = document.getElementById("photoInput");
+  const photoPreview = document.getElementById("photoPreview");
+  const saveBtn = document.getElementById("saveBtn");
+  const closeBtn = document.getElementById("closeBtn");
 
-    function dropPin(event) {
-      const map = document.getElementById("map");
-      const mapRect = map.getBoundingClientRect();
-      const x = event.clientX - mapRect.left - offsetX;
-      const y = event.clientY - mapRect.top - offsetY;
+  let activePin = null;
 
-      const newPin = document.createElement("img");
-      newPin.src = pinImage.src;
-      newPin.className = "dropped-pin";
-      newPin.style.left = x + "px";
-      newPin.style.top = y + "px";
+  pinImage.addEventListener("dragstart", function (e) {
+    const rect = pinImage.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+  });
 
-      newPin.addEventListener("mouseenter", function () {
-        newPin.classList.add("selected");
-        hoveredPin = newPin;
-      });
-      newPin.addEventListener("mouseleave", function () {
-        newPin.classList.remove("selected");
-        hoveredPin = null;
-      });
-      newPin.addEventListener("click", function () {
-        openModal();
-      });
+  function dropPin(event) {
+    const map = document.getElementById("map");
+    const mapRect = map.getBoundingClientRect();
 
-      map.appendChild(newPin);
-    }
+    const x = event.clientX - mapRect.left - offsetX;
+    const y = event.clientY - mapRect.top - offsetY;
 
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Backspace" && hoveredPin) {
-        hoveredPin.remove();
-        hoveredPin = null;
+    const newPin = document.createElement("img");
+    newPin.src = pinImage.src;
+    newPin.className = "dropped-pin";
+    newPin.style.left = x + "px";
+    newPin.style.top = y + "px";
+
+    newPin.addEventListener("click", () => {
+      activePin = newPin;
+      const data = pinData.get(newPin) || { diary: "", photo: "" };
+      diaryInput.value = data.diary;
+      if (data.photo) {
+        photoPreview.src = data.photo;
+        photoPreview.style.display = "block";
+      } else {
+        photoPreview.src = "";
+        photoPreview.style.display = "none";
       }
+      modal.style.display = "flex";
     });
 
-    function openModal() {
-      document.getElementById("diaryModal").style.display = "block";
-      document.getElementById("diaryText").value = "";
-      document.getElementById("photoPreview").innerHTML = "";
-    }
-
-    function closeModal() {
-      document.getElementById("diaryModal").style.display = "none";
-    }
-
-    document.getElementById("photoUpload").addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          const img = document.createElement("img");
-          img.src = event.target.result;
-          document.getElementById("photoPreview").innerHTML = "";
-          document.getElementById("photoPreview").appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
+    newPin.addEventListener("mouseenter", function () {
+      newPin.classList.add("selected");
+      hoveredPin = newPin;
     });
-  </script>
+    newPin.addEventListener("mouseleave", function () {
+      newPin.classList.remove("selected");
+      hoveredPin = null;
+    });
+
+    map.appendChild(newPin);
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Backspace" && hoveredPin) {
+      hoveredPin.remove();
+      hoveredPin = null;
+    }
+  });
+
+  // Save modal data
+  saveBtn.addEventListener("click", () => {
+    if (activePin) {
+      const diary = diaryInput.value;
+      const photo = photoPreview.src;
+      pinData.set(activePin, { diary, photo });
+    }
+    modal.style.display = "none";
+    activePin = null;
+  });
+
+  // Photo preview
+  photoInput.addEventListener("change", function () {
+    const file = photoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        photoPreview.src = e.target.result;
+        photoPreview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    activePin = null;
+  });
+</script>
+
 </body>
 </html>
