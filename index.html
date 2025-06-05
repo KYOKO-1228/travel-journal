@@ -153,13 +153,17 @@
     }
   </style>
 </head>
+
+  
 <body>
+  <!--creating the header-->
 <div class="header">
   <h1 id="header" style="padding-top:320px">ONLINE</h1>
   <h1 id="header">TRAVEL JOURNAL</h1>
 </div>
-
+<!--creating the sub-header section under the header-->
 <div class="sub-header">
+  <!--adding the text in the wanted space (the middle)-->
   <hr>
   <br>
   <br>
@@ -171,11 +175,12 @@
   <hr>
 </div>
 
+  <!-- making sure the website has a background color with the div content--> 
 <div class="content">
   <h1>YOUR WORLD MAP</h1>
   <p style="color: white">Drag and drop the pins to places you've gone to!</p>
   <p style="color: white">(hover to select and press the delete key to delete pins)</p>
-
+<!--interactive map with the pin drop funciton-->
   <div id="map" ondragover="event.preventDefault()" ondrop="dropPin(event)">
     <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
          draggable="true"
@@ -183,7 +188,7 @@
          id="pin"
          alt="Map Pin" />
   </div>
-
+<!-- all content floating on the left side of the page-->
   <div class="leftcolumn">
     <div class="list-cont">
       <h1>COUNTRY LIST</h1>
@@ -192,7 +197,7 @@
       <div class="total" contenteditable="true" style="color: red; font-size:40px;">Country Count</div>
     </div>
   </div>
-
+<!-- all content floating on the right side of the page-->
   <div class="rightcolumn">
     <!-- Header with plus button -->
     <div id="diaryHeader">
@@ -204,6 +209,7 @@
     <div id="diaryContainer">
       
       <div class="diarybox" contenteditable="true">
+        <!-- boxes for dates and location-->
           <div class="date" contenteditable="true">date...</div>
           <div class="location" contenteditable="true">location...</div>
         Write your diary here...
@@ -215,6 +221,7 @@
 </div>
 
 <script>
+  //pin drop on the map 
   const pinImage = document.getElementById("pin");
   let offsetX = 0;
   let offsetY = 0;
@@ -237,7 +244,7 @@
     newPin.className = "dropped-pin";
     newPin.style.left = x + "px";
     newPin.style.top = y + "px";
-
+//hovering over a pin to select
     newPin.addEventListener("mouseenter", function () {
       newPin.classList.add("selected");
       hoveredPin = newPin;
@@ -249,7 +256,7 @@
 
     map.appendChild(newPin);
   }
-
+// deleting a pin
   document.addEventListener("keydown", function (event) {
     if (event.key === "Backspace" && hoveredPin) {
       hoveredPin.remove();
